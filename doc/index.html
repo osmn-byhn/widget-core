@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+    integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="shortcut icon" href="https://i.hizliresim.com/278ij38.png"
+    type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&amp;display=swap"
+    rel="stylesheet">
+  <title>osmn-byhn/widget-core</title>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css"
+    rel="stylesheet">
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css"
+    rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    };
+  </script>
+  <style>
+    body {
+      font-family: "Afacad", serif;
+    }
+  </style>
+
+  <script>
+    if (localStorage.getItem("color-theme") === "light" || (!("color-theme" in
+          localStorage) && window.matchMedia("(prefers-color-scheme: light)")
+        .matches)) {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+  </script>
+</head>
+
+<body class="bg-gray-100 text-black">
+  <div id="app"
+    class="w-[95%] lg:max-w-[1140px] mx-auto bg-white dark:bg-black rounded-md shadow-xl p-5 mt-[12vh]">
+    <h1 id="widgetcore-"
+      class="text-3xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#widgetcore-">WidgetCore 🚀</a>
+    </h1>
+
+    <b class="font-bold">WidgetCore</b> is a high-performance, cross-platform
+    library built with Node.js and C++ for creating interactive and persistent
+    desktop widgets. It leverages native OS webview engines (<b
+      class="font-bold">WebView2</b> on Windows, <b
+      class="font-bold">WKWebView</b> on macOS, and <b
+      class="font-bold">WebKitGTK</b> on Linux) to provide a seamless,
+    lightweight, and hardware-accelerated widget experience.
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-architecture-overview"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-architecture-overview">🏗️ Architecture Overview</a>
+    </h2>
+
+    WidgetCore uses a hybrid architecture where the core logic is managed in
+    Node.js, while windowing and webview rendering are handled by a native C++
+    module (<code class="bg-gray-200 px-1 rounded">widget_core.node</code>).
+
+    <div class="code-container relative rounded-lg p-4 overflow-auto mt-2">
+      <button
+        class="copy-btn absolute top-3 right-3 bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-3 py-1 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition m-[25px] z-[10]"><i
+          id="copyBtn" class="bi bi-clipboard"></i></button>
+      <pre class="line-numbers"><code class="language-mermaid">graph TD
+    A[Node.js App] --&gt; B[DesktopWidget Class]
+    B --&gt; C[WidgetRegistry]
+    B --&gt; D[AutostartManager]
+    B --&gt; E[Native Module C++]
+    E --&gt; F{Platform}
+    F --&gt;|Linux| G[WebKitGTK + GTK3]
+    F --&gt;|macOS| H[WKWebView + Cocoa]
+    F --&gt;|Windows| I[WebView2 + Win32]
+    G --&gt; J[Desktop Widget Window]
+    H --&gt; J
+    I --&gt; J
+</code></pre>
+    </div>
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-core-capabilities"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-core-capabilities">✨ Core Capabilities</a>
+    </h2>
+    <ul class="list-disc pl-5">
+      <li><b class="font-bold">🚀 HTML/JS Power</b>: Build widgets using any web
+        technology. No restricted environments.</li>
+      <li><b class="font-bold">🖼️ Native Transparency</b>: Aggressive
+        transparency settings ensure widgets blend perfectly with wallpapers.
+      </li>
+      <li><b class="font-bold">🖇️ System Integration</b>: Widgets are pinned
+        below icons (on supported platforms) and removed from
+        taskbars/app-switchers.</li>
+      <li><b class="font-bold">🖱️ Full Interactivity</b>: Toggle <code
+          class="bg-gray-200 px-1 rounded">interactive: true</code> to allow
+        mouse clicks and keyboard input directly on the desktop background.</li>
+      <li><b class="font-bold">💾 Auto-Persistence</b>: Automatically saves
+        widget state and ensures they reappear after system reboots.</li>
+      <li><b class="font-bold">🧩 Scroll-Free Design</b>: Scrollbars are hidden
+        by default via CSS injection, with optional overflow prevention.</li>
+    </ul>
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-security-shield"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-security-shield">🔒 Security Shield</a>
+    </h2>
+
+    Security is a primary concern for widgets. <b
+      class="font-bold">WidgetCore</b> implements a multi-layer "Shield" to
+    protect the host system:
+
+    <ul class="list-disc pl-5">
+      <li class="ml-0"><b class="font-bold">API Isolation</b>: Injects a preload
+        script that freezes <code
+          class="bg-gray-200 px-1 rounded">process</code>, <code
+          class="bg-gray-200 px-1 rounded">require</code>, and other sensitive
+        Node.js globals.</li>
+      <li class="ml-0"><b class="font-bold">Context Separation</b>: The webview
+        runs in a sandboxed environment where it cannot access the local
+        filesystem or execute shell commands directly.</li>
+      <li class="ml-0"><b class="font-bold">Protocol Filtering</b>: Only <code
+          class="bg-gray-200 px-1 rounded">http:</code>, <code
+          class="bg-gray-200 px-1 rounded">https:</code>, and valid <code
+          class="bg-gray-200 px-1 rounded">file:</code> protocols are allowed
+        for loading content.</li>
+      <li class="ml-0"><b class="font-bold">Keyword Blocking</b>: Input data and
+        URLs are scanned for dangerous keywords like <code
+          class="bg-gray-200 px-1 rounded">shell</code>, <code
+          class="bg-gray-200 px-1 rounded">eval</code>, or <code
+          class="bg-gray-200 px-1 rounded">exec</code>.</li>
+    </ul>
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-detailed-usage"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-detailed-usage">🚀 Detailed Usage</a>
+    </h2>
+
+    <h3 id="advanced-html-widget-example"
+      class="text-xl font-semibold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#advanced-html-widget-example">Advanced HTML Widget Example</a>
+    </h3>
+    You can create complex, self-contained widgets using a single string:
+
+    <div class="code-container relative rounded-lg p-4 overflow-auto mt-2">
+      <button
+        class="copy-btn absolute top-3 right-3 bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-3 py-1 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition m-[25px] z-[10]"><i
+          id="copyBtn" class="bi bi-clipboard"></i></button>
+      <pre class="line-numbers"><code class="language-typescript">import { DesktopWidget } from 'widget-core';
+
+const clockHTML = `
+  <div id="clock" style="font-size: 48px; font-weight: bold; color: #60A5FA; font-family: sans-serif; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">00:00:00</div>
+  <script>
+    setInterval(() => {
+      document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+    }, 1000);
+  </script>
+`;
+
+const widget = new DesktopWidget("", {
+  html: clockHTML,
+  width: 300,
+  height: 100,
+  x: 50,
+  y: 50,
+  scroll: false,
+  interactive: false // Clocks usually don't need input
+});
+
+// Make it stay after reboot
+await widget.makePersistent(widget.options);
+</code></pre>
+    </div>
+
+    <h3 id="static-global-management"
+      class="text-xl font-semibold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#static-global-management">Static Global Management</a>
+    </h3>
+    <div class="code-container relative rounded-lg p-4 overflow-auto mt-2">
+      <button
+        class="copy-btn absolute top-3 right-3 bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-3 py-1 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition m-[25px] z-[10]"><i
+          id="copyBtn" class="bi bi-clipboard"></i></button>
+      <pre class="line-numbers"><code class="language-typescript">// Stop all running widgets across the system
+const stopped = DesktopWidget.stopAll();
+
+// Get list of all registered widgets
+const widgets = DesktopWidget.listWidgets();
+widgets.forEach(w =&gt; console.log(<code class="bg-gray-200 px-1 rounded">ID: ${w.id}, URL: ${w.url}, Active: ${w.active}</code>));
+</code></pre>
+    </div>
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-api-documentation"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-api-documentation">🛠️ API Documentation</a>
+    </h2>
+
+    <h3 id="widgetoptions"
+      class="text-xl font-semibold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#widgetoptions"><code
+          class="bg-gray-200 px-1 rounded">WidgetOptions</code></a>
+    </h3>
+
+    <div class="overflow-x-auto my-4">
+      <table class="table-auto w-full border border-gray-700">
+        <thead>
+          <tr>
+            <th class="p-2 border border-gray-700 bg-gray-800 text-white">
+              Property</th>
+            <th class="p-2 border border-gray-700 bg-gray-800 text-white">Type
+            </th>
+            <th class="p-2 border border-gray-700 bg-gray-800 text-white">
+              Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bg-gray-100 bg-gray-100 dark:bg-gray-900">
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">width</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">number</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              Width in pixels.</td>
+          </tr>
+          <tr class="bg-gray-200 dark:bg-gray-800">
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">height</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">number</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              Height in pixels.</td>
+          </tr>
+          <tr class="bg-gray-100 bg-gray-100 dark:bg-gray-900">
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">x</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">number</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              X coordinate from top-left.</td>
+          </tr>
+          <tr class="bg-gray-200 dark:bg-gray-800">
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">y</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">number</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              Y coordinate from top-left.</td>
+          </tr>
+          <tr class="bg-gray-100 bg-gray-100 dark:bg-gray-900">
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">opacity</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">number</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              Window opacity (0.0 to 1.0). Default: <code
+                class="bg-gray-200 px-1 rounded">1.0</code>.</td>
+          </tr>
+          <tr class="bg-gray-200 dark:bg-gray-800">
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">interactive</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">boolean</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              If <code class="bg-gray-200 px-1 rounded">true</code>, clicks pass
+              through to the widget. Default: <code
+                class="bg-gray-200 px-1 rounded">false</code>.</td>
+          </tr>
+          <tr class="bg-gray-100 bg-gray-100 dark:bg-gray-900">
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">html</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">string</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              Raw HTML/CSS source code to load.</td>
+          </tr>
+          <tr class="bg-gray-200 dark:bg-gray-800">
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">scroll</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">boolean</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              If <code class="bg-gray-200 px-1 rounded">false</code>, <code
+                class="bg-gray-200 px-1 rounded">overflow: hidden</code> is
+              applied. Default: <code
+                class="bg-gray-200 px-1 rounded">true</code>.</td>
+          </tr>
+          <tr class="bg-gray-100 bg-gray-100 dark:bg-gray-900">
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">blur</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              <code class="bg-gray-200 px-1 rounded">boolean</code></td>
+            <td
+              class="p-2 border border-gray-700 text-center text-black dark:text-white">
+              Platform-specific background blur effect.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 id="instance-methods"
+      class="text-xl font-semibold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#instance-methods">Instance Methods</a>
+    </h3>
+    <ul class="list-disc pl-5">
+      <li><b class="font-bold"><code
+            class="bg-gray-200 px-1 rounded">makePersistent(options): Promise
+            <boolean></boolean></code></b>: Saves to disk and enables autostart.
+      </li>
+      <li><b class="font-bold"><code
+            class="bg-gray-200 px-1 rounded">activate(): boolean</code></b>:
+        Enables autostart and launches the process.</li>
+      <li><b class="font-bold"><code
+            class="bg-gray-200 px-1 rounded">deactivate(): boolean</code></b>:
+        Disables autostart and kills the process.</li>
+      <li><b class="font-bold"><code
+            class="bg-gray-200 px-1 rounded">launchStandalone():
+            boolean</code></b>: Spawns a background <code
+          class="bg-gray-200 px-1 rounded">runner.js</code> process for the
+        widget.</li>
+    </ul>
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-linux-platform-notes-gtkwebkit"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-linux-platform-notes-gtkwebkit">🐧 Linux Platform Notes
+        (GTK/WebKit)</a>
+    </h2>
+    On Linux, WidgetCore uses GTK and WebKitGTK. For full transparency, ensure
+    your window manager/compositor (like Mutter on GNOME or KWin on KDE) is
+    configured correctly.
+    <ul class="list-disc pl-5">
+      <li><b class="font-bold">Dependencies</b>: <code
+          class="bg-gray-200 px-1 rounded">libwebkit2gtk-4.0-dev</code> or <code
+          class="bg-gray-200 px-1 rounded">libwebkit2gtk-4.1-dev</code>.</li>
+      <li><b class="font-bold">Autostart</b>: Creates <code
+          class="bg-gray-200 px-1 rounded">.desktop</code> files in <code
+          class="bg-gray-200 px-1 rounded">~/.config/autostart/</code>.</li>
+    </ul>
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-macos-platform-notes-cocoawkwebview"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-macos-platform-notes-cocoawkwebview">🍎 macOS Platform Notes
+        (Cocoa/WKWebView)</a>
+    </h2>
+    <ul class="list-disc pl-5">
+      <li><b class="font-bold">Engine</b>: WKWebView.</li>
+      <li><b class="font-bold">Autostart</b>: Creates <code
+          class="bg-gray-200 px-1 rounded">.plist</code> files in <code
+          class="bg-gray-200 px-1 rounded">~/Library/LaunchAgents/</code>.</li>
+      <li><b class="font-bold">Transparency</b>: Fully supported out-of-the-box.
+      </li>
+    </ul>
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-windows-platform-notes-win32webview2"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-windows-platform-notes-win32webview2">💻 Windows Platform Notes
+        (Win32/WebView2)</a>
+    </h2>
+    <ul class="list-disc pl-5">
+      <li><b class="font-bold">Engine</b>: WebView2 (Evergreen Runtime
+        required).</li>
+      <li><b class="font-bold">Autostart</b>: Uses the <code
+          class="bg-gray-200 px-1 rounded">HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code>
+        registry key.</li>
+    </ul>
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-development-testing"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-development-testing">🧪 Development &amp; Testing</a>
+    </h2>
+
+    We use <b class="font-bold">Vitest</b> for unit testing. The native layer is
+    mocked automatically during tests.
+
+    <div class="code-container relative rounded-lg p-4 overflow-auto mt-2">
+      <button
+        class="copy-btn absolute top-3 right-3 bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-3 py-1 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition m-[25px] z-[10]"><i
+          id="copyBtn" class="bi bi-clipboard"></i></button>
+      <pre class="line-numbers"><code class="language-bash"><h1 id="install-dependencies" class="text-3xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+                <a href="#install-dependencies">Install dependencies</a>
+              </h1>
+npm install
+
+<h1 id="build-native-module-typescript" class="text-3xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+                <a href="#build-native-module-typescript">Build native module &amp; TypeScript</a>
+              </h1>
+npm run build
+
+<h1 id="run-tests" class="text-3xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+                <a href="#run-tests">Run tests</a>
+              </h1>
+npm test
+</code></pre>
+    </div>
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-troubleshooting"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-troubleshooting">🐛 Troubleshooting</a>
+    </h2>
+    <ul class="list-disc pl-5">
+      <li><b class="font-bold">Widget background is white on Linux</b>: Ensure
+        your compositor supports transparency. We use ARGB visual for the GTK
+        window.</li>
+      <li><b class="font-bold">Keyboard input not working</b>: Set <code
+          class="bg-gray-200 px-1 rounded">interactive: true</code> in the
+        options.</li>
+      <li><b class="font-bold">Widget doesn't appear after restart</b>: Check if
+        the registry file <code
+          class="bg-gray-200 px-1 rounded">~/.config/widget-core/widgets.json</code>
+        exists and the autostart entry is correct.</li>
+    </ul>
+
+    <hr class="border-gray-300 my-4">
+
+    <h2 id="-license"
+      class="text-2xl font-bold my-1 !text-gray-600 dark:!text-gray-100">
+      <a href="#-license">📝 License</a>
+    </h2>
+    MIT License. Copyright (c) 2026 Osman Beyhan. Contributions are welcome!
+
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+
+
+        document.querySelector(".copy-btn")?.addEventListener("click",
+          function() {
+            const code = document.querySelector("pre code").innerText;
+            navigator.clipboard.writeText(code);
+            const copyBtn = document.getElementById("copyBtn");
+            copyBtn.classList.remove("bi-clipboard");
+            copyBtn.classList.add("bi-clipboard-check");
+          });
+      });
+    </script>
+    <p class="text-right text-black dark:text-white">Author: Osman Beyhan</p>
+    <div class="flex gap-3">
+      <a href="https://github.com/osmn-byhn/widget-core" target="_blank"
+        class="flex gap-2 w-8 h-8 rounded-md bg-[#080808] text-white items-center justify-center">
+        <i class="bi bi bi-github text-xl p-4"></i>
+      </a><a href="https://www.npmjs.com/package/@osmn-byhn/widget-core"
+        target="_blank"
+        class="flex gap-2 w-8 h-8 rounded-md bg-[#cd3e3d] text-white items-center justify-center">
+        <i class="bi fa-brands fa-npm text-xl p-4"></i>
+      </a><a
+        href="https://yarnpkg.com/package?q=osmn-byhnn&amp;name=%40osmn-byhn%2Fwidget-core"
+        target="_blank"
+        class="flex gap-2 w-8 h-8 rounded-md bg-[#3c93bb] text-white items-center justify-center">
+        <i class="bi fa-brands fa-yarn text-xl p-4"></i>
+      </a><a href="https://widget-core.osmanbeyhan.com/" target="_blank"
+        class="flex gap-2 w-8 h-8 rounded-md bg-[#000] text-white items-center justify-center">
+        <i class="bi bi bi-globe-americas text-xl p-4"></i>
+      </a>
+    </div>
+  </div>
+  <hr class="mt-10">
+  <div class="my-5">
+    <p class="text-center">
+      <span class="">❤️ Make via</span>
+      <a href="https://www.mdtoweb.osmanbeyhan.com/"
+        class="text-blue-600">MDtoWeb</a>
+    </p>
+  </div>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js">
+  </script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js">
+  </script>
+
+
+</body>
+
+</html>
