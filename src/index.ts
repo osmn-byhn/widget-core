@@ -1,5 +1,6 @@
 import { createRequire } from "module";
 import { spawn } from "child_process";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { WidgetRegistry } from "./registry.js";
@@ -35,6 +36,7 @@ export interface WidgetOptions {
   html?: string;
   scroll?: boolean;
   permissions?: string[]; // e.g., ['network', 'disk-read']
+  detached?: boolean;
 }
 
 export class DesktopWidget {
@@ -58,10 +60,48 @@ export class DesktopWidget {
 
     // Native tarafında pencereyi oluştur
     try {
-      this.nativeHandle = native.createWidget(url, options);
+      if (options.detached) {
+        this.spawnNativeHost(url, options);
+      } else {
+        this.nativeHandle = native.createWidget(url, options);
+      }
     } catch (e) {
       console.error("Failed to create native widget:", e);
     }
+  }
+
+  private spawnNativeHost(url: string, options: WidgetOptions) {
+    const isWin = process.platform === 'win32';
+    const hostName = isWin ? 'widget_host.exe' : 'widget_host';
+    // Look in build/Release
+    const hostPath = path.resolve(__dirname, '..', 'build', 'Release', hostName);
+    
+    if (!fs.existsSync(hostPath)) {
+        console.warn(`Native host not found at ${hostPath}. Falling back to in-process widget.`);
+        this.nativeHandle = native.createWidget(url, options);
+        return;
+    }
+
+    const args = [
+        `--url=${url}`,
+        `--width=${options.width}`,
+        `--height=${options.height}`,
+        `--x=${options.x}`,
+        `--y=${options.y}`,
+        `--opacity=${options.opacity ?? 1.0}`,
+        `--blur=${options.blur ? 'true' : 'false'}`,
+        `--sticky=${options.sticky !== false ? 'true' : 'false'}`,
+        `--interactive=${options.interactive !== false ? 'true' : 'false'}`,
+        `--scroll=${options.scroll !== false ? 'true' : 'false'}`
+    ];
+
+    console.log(`[DesktopWidget] Spawning detached native host: ${hostName}`);
+    const child = spawn(hostPath, args, {
+        detached: true,
+        stdio: 'ignore'
+    });
+    
+    child.unref();
   }
 
   public setOpacity(value: number) {

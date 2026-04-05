@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Glow Widget</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #010101; /* Transparency Key RGB(1,1,1) */
+            color: #00f2ff;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .container {
+            position: relative;
+            width: 300px;
+            text-align: center;
+            border-right: 2px solid rgba(0, 242, 255, 0.1);
+            padding-right: 20px;
+        }
+
+        .header {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: #ff2d55;
+            margin-bottom: 10px;
+            opacity: 0.8;
+            font-weight: bold;
+        }
+
+        .clock-box {
+            position: relative;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            padding: 15px 10px;
+            margin: 5px 0;
+        }
+
+        .corner {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 2px solid #00f2ff;
+        }
+        .top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .top-right { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+        .bottom-left { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+        .bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        .time {
+            font-size: 42px;
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.7);
+            display: inline-block;
+        }
+
+        .seconds {
+            font-size: 28px;
+            color: #ff2d55;
+            text-shadow: 0 0 15px rgba(255, 45, 85, 0.7);
+            margin-left: 5px;
+        }
+
+        .sub-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            margin-top: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            color: #fffb00;
+        }
+
+        .date-box {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #00f2ff;
+            letter-spacing: 2px;
+        }
+
+        .date-brackets {
+            color: #ff2d55;
+            font-size: 10px;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .status {
+            margin-top: 20px;
+            font-size: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .dot {
+            width: 5px;
+            height: 5px;
+            background: #00ff22;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #00ff22;
+        }
+
+        #ampm {
+            background: rgba(255, 251, 0, 0.2);
+            padding: 2px 4px;
+            border: 1px solid #fffb00;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">// SYS.CLOCK //</div>
+        
+        <div class="clock-box">
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+            
+            <span class="time" id="time">16:21</span>
+            <span class="seconds" id="seconds">58</span>
+
+            <div class="sub-info">
+                <span id="ampm">PM</span>
+                <span>UTC+3 / ISTANBUL</span>
+            </div>
+        </div>
+
+        <div class="date-box">
+            <span class="date-brackets">[ DATE ]</span>
+            <span id="date">05.NIS.2026</span>
+            <div style="font-size: 10px; color: #ff2d55; margin-top: 3px;">[ PAZAR ]</div>
+        </div>
+
+        <div class="status">
+            <div class="dot"></div>
+            <span>SYS_ONLINE</span>
+            <span>|</span>
+            <span>TS:1775395318</span>
+            <span>|</span>
+            <span>V.2077</span>
+        </div>
+    </div>
+
+    <script>
+        function update() {
+            var now = new Date();
+            
+            // Time
+            var h = now.getHours();
+            var ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12;
+            h = h ? h : 12;
+            var hh = ('0' + h).slice(-2);
+            var mm = ('0' + now.getMinutes()).slice(-2);
+            var ss = ('0' + now.getSeconds()).slice(-2);
+            
+            document.getElementById('time').innerText = hh + ':' + mm;
+            document.getElementById('seconds').innerText = ss;
+            document.getElementById('ampm').innerText = ampm;
+
+            // Date
+            var days = ['PAZAR', 'PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA', 'CUMARTESİ'];
+            var months = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
+            
+            var dd = ('0' + now.getDate()).slice(-2);
+            var mon = months[now.getMonth()].substring(0, 3);
+            var yyyy = now.getFullYear();
+            
+            document.getElementById('date').innerText = dd + '.' + mon + '.' + yyyy;
+            // The day of week in Turkish is already set for Sunday based on user's screenshot date
+        }
+
+        setInterval(update, 1000);
+        update();
+    </script>
+</body>
+</html>

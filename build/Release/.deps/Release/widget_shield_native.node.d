@@ -1,1 +1,0 @@
-cmd_Release/widget_shield_native.node := ln -f "Release/obj.target/widget_shield_native.node" "Release/widget_shield_native.node" 2>/dev/null || (rm -rf "Release/widget_shield_native.node" && cp -af "Release/obj.target/widget_shield_native.node" "Release/widget_shield_native.node")

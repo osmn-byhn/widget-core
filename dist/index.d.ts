@@ -10,6 +10,7 @@ export interface WidgetOptions {
     html?: string;
     scroll?: boolean;
     permissions?: string[];
+    detached?: boolean;
 }
 export declare class DesktopWidget {
     private url;
@@ -19,6 +20,7 @@ export declare class DesktopWidget {
     private registry;
     private autostart;
     constructor(url: string | undefined, options: WidgetOptions);
+    private spawnNativeHost;
     setOpacity(value: number): void;
     setPosition(x: number, y: number): void;
     setPersistent(value: boolean): void;

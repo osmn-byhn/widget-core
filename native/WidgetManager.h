@@ -1,7 +1,6 @@
 #ifndef WIDGET_MANAGER_H
 #define WIDGET_MANAGER_H
 
-#include <napi.h>
 #include <string>
 
 struct WidgetOptions {
