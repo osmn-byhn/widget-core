@@ -1,4 +1,4 @@
-Testing with widget path: file:///home/shiyakami/Libraries/widget-core-linux/temp_widgets/cyberpunk-clock-widget/index.html
+Testing with widget path: file:///home/shiyakami/Libraries/widget-core-linux-linux/temp_widgets/cyberpunk-clock-widget/index.html
 Overriding existing handler for signal 10. Set JSC_SIGNAL_FOR_GC if you want WebKit to use a different signal
 libEGL warning: DRI3 error: Could not get DRI3 device
 libEGL warning: Ensure your X server supports DRI3 to get accelerated rendering

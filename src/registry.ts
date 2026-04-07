@@ -14,7 +14,7 @@ export class WidgetRegistry {
     private configPath: string;
 
     constructor() {
-        this.configPath = path.join(os.homedir(), '.config', 'widget-core', 'widgets.json');
+        this.configPath = path.join(os.homedir(), '.config', 'widget-core-linux', 'widgets.json');
         this.ensureConfigDir();
     }
 

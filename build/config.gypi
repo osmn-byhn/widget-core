@@ -500,7 +500,7 @@
     "standalone_static_library": 1,
     "userconfig": "/home/shiyakami/.npmrc",
     "cache": "/home/shiyakami/.npm",
-    "local_prefix": "/home/shiyakami/Libraries/widget-core-linux",
+    "local_prefix": "/home/shiyakami/Libraries/widget-core-linux-linux",
     "globalconfig": "/etc/npmrc",
     "init_module": "/home/shiyakami/.npm-init.js",
     "npm_version": "10.9.4",

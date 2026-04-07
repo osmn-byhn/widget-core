@@ -47,7 +47,7 @@ Security is a primary concern for widgets. **WidgetCore** implements a multi-lay
 ### Advanced HTML Widget Example
 
 ```typescript
-import { DesktopWidget } from '@osmn-byhn/widget-core';
+import { DesktopWidget } from '@osmn-byhn/widget-core-linux';
 
 const clockHTML = `
   <div id="clock" style="font-size: 48px; font-weight: bold; color: #60A5FA; font-family: sans-serif; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">00:00:00</div>
@@ -132,8 +132,8 @@ npm run build
 npm test
 ```
 
-
 ---
 
 ## 📝 License
+
 MIT License. Copyright (c) 2026 Osman Beyhan.

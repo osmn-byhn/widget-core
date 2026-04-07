@@ -4,7 +4,7 @@ import os from 'os';
 export class WidgetRegistry {
     configPath;
     constructor() {
-        this.configPath = path.join(os.homedir(), '.config', 'widget-core', 'widgets.json');
+        this.configPath = path.join(os.homedir(), '.config', 'widget-core-linux', 'widgets.json');
         this.ensureConfigDir();
     }
     ensureConfigDir() {

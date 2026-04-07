@@ -1,17 +1,17 @@
 {
-  "name": "@osmn-byhn/widget-core",
+  "name": "@osmn-byhn/widget-core-linux",
   "version": "1.0.0",
   "description": "High-performance desktop widget manager library for Linux.",
   "author": "Osman Beyhan",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/osmn-byhn/widget-core.git"
+    "url": "git+https://github.com/osmn-byhn/widget-core-linux.git"
   },
   "bugs": {
-    "url": "https://github.com/osmn-byhn/widget-core/issues"
+    "url": "https://github.com/osmn-byhn/widget-core-linux/issues"
   },
-  "homepage": "https://widget-core.osmanbeyhan.com",
+  "homepage": "https://widget-core-linux.osmanbeyhan.com",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

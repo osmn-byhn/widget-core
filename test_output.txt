@@ -1,9 +1,9 @@
 
-> @osmn-byhn/widget-core@1.0.0 test
+> @osmn-byhn/widget-core-linux@1.0.0 test
 > vitest run
 
 
-[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90m/home/shiyakami/Libraries/widget-core-linux[39m
+[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90m/home/shiyakami/Libraries/widget-core-linux-linux[39m
 
  [32m✓[39m dist/shield.test.js [2m([22m[2m2 tests[22m[2m)[22m[32m 25[2mms[22m[39m
  [32m✓[39m src/autostart.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 23[2mms[22m[39m
