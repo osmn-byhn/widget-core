@@ -1,11 +1,22 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// FIX: Set environment variables BEFORE importing the native module
-// Signal 10 (SIGUSR1) conflict fix: tell WebKit to use SIGUSR2 (12)
-process.env.JSC_SIGNAL_FOR_GC = '12';
-// Ensure X11/XWayland for GNOME desktop compatibility
-process.env.GDK_BACKEND = 'x11';
+// --- ENVIRONMENT FIXES ---
+// 1. Signal Conflict Fix: Tell WebKit to use SIGUSR2 (avoids Segfault/Error)
+process.env.JSC_SIGNAL_FOR_GC = 'SIGUSR2';
+
+// 2. Visibility Fix: Disable compositing mode (essential for some GPU/Wayland drivers)
+process.env.WEBKIT_DISABLE_COMPOSITING_MODE = '1';
+
+// 3. Backend Fix: Automatic selection
+const isGnome = process.env.XDG_CURRENT_DESKTOP?.toUpperCase().includes('GNOME');
+const isWayland = process.env.XDG_SESSION_TYPE === 'wayland';
+
+if (isGnome && isWayland) {
+    // GNOME Wayland needs XWayland to support 'keep-below' layer
+    process.env.GDK_BACKEND = 'x11';
+}
+// -------------------------
 
 import { DesktopWidget } from '../dist/index.js';
 
