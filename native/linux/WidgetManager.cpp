@@ -34,9 +34,11 @@ struct PosTask {
 static GMainContext* gtk_context = nullptr;
 
 void run_gtk_loop() {
-    // Force XWayland (X11 compat layer) to enable EWMH keep-below on GNOME Wayland
-    setenv("GDK_BACKEND", "x11", 1);
-    gtk_init(NULL, NULL);
+    // Note: Environment variables like GDK_BACKEND must be set in the process 
+    // before the GTK thread starts. setenv() is NOT thread-safe for background threads.
+    if (!gtk_init_check(NULL, NULL)) {
+        return;
+    }
     gtk_context = g_main_context_default();
     gtk_main();
 }
@@ -162,12 +164,17 @@ gboolean create_widget_idle(gpointer data) {
         webkit_user_content_manager_add_style_sheet(ucm, sheet);
     }
     
-    // Aggressive Transparency
+    // Aggressive Transparency using CSS
     GdkRGBA rgba = {0, 0, 0, 0};
     webkit_web_view_set_background_color(WEBKIT_WEB_VIEW(webview), &rgba);
     
-    // Explicitly set window background to transparent too
-    gtk_widget_override_background_color(window, GTK_STATE_FLAG_NORMAL, &rgba);
+    // Modern transparency: apply via CSS provider
+    GtkCssProvider* provider = gtk_css_provider_new();
+    gtk_css_provider_load_from_data(provider, "window, .main { background: transparent; }", -1, NULL);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(window),
+                                   GTK_STYLE_PROVIDER(provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(provider);
 
     gtk_widget_show_all(window);
 

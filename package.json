@@ -16,10 +16,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "setup": "./scripts/setup-linux.sh",
+    "preinstall": "./scripts/setup-linux.sh",
     "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
-    "install": "node-gyp rebuild"
+    "install": "node-gyp rebuild",
+    "demo": "node examples/demo-widget.js"
   },
   "keywords": [
     "widget",

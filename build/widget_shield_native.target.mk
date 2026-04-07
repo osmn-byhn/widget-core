@@ -104,7 +104,7 @@ INCS_Debug := \
 	-I/home/shiyakami/.cache/node-gyp/22.22.0/deps/zlib \
 	-I/home/shiyakami/.cache/node-gyp/22.22.0/deps/v8/include \
 	-I$(srcdir)/native \
-	-I/home/shiyakami/Libraries/widget-core-linux-linux/node_modules/node-addon-api
+	-I/home/shiyakami/Libraries/widget-core-linux/node_modules/node-addon-api
 
 DEFS_Release := \
 	'-DNODE_GYP_MODULE_NAME=widget_shield_native' \
@@ -207,7 +207,7 @@ INCS_Release := \
 	-I/home/shiyakami/.cache/node-gyp/22.22.0/deps/zlib \
 	-I/home/shiyakami/.cache/node-gyp/22.22.0/deps/v8/include \
 	-I$(srcdir)/native \
-	-I/home/shiyakami/Libraries/widget-core-linux-linux/node_modules/node-addon-api
+	-I/home/shiyakami/Libraries/widget-core-linux/node_modules/node-addon-api
 
 OBJS := \
 	$(obj).target/$(TARGET)/native/main.o \
