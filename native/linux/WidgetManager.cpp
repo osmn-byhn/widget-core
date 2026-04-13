@@ -80,6 +80,12 @@ struct KeepBelowData {
 };
 #endif
 
+// Auto-allow all permissions (Geolocation, Media, Notifications, etc.)
+static gboolean permission_request_cb(WebKitWebView *web_view, WebKitPermissionRequest *request, gpointer user_data) {
+    webkit_permission_request_allow(request);
+    return TRUE;
+}
+
 gboolean create_widget_idle(gpointer data) {
     CreateTask* task = (CreateTask*)data;
 
@@ -122,6 +128,19 @@ gboolean create_widget_idle(gpointer data) {
     if (visual) gtk_widget_set_visual(window, visual);
 
     GtkWidget* webview = webkit_web_view_new();
+    
+    // Auto-allow all permission requests (Geolocation, Camera, Microphone, etc.)
+    g_signal_connect(webview, "permission-request", G_CALLBACK(permission_request_cb), NULL);
+    
+    // Enable advanced web APIs
+    WebKitSettings *settings = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(webview));
+    webkit_settings_set_enable_developer_extras(settings, TRUE);
+    webkit_settings_set_enable_webgl(settings, TRUE);
+    webkit_settings_set_enable_webaudio(settings, TRUE);
+    webkit_settings_set_enable_media_stream(settings, TRUE);
+    webkit_settings_set_enable_mediasource(settings, TRUE);
+    webkit_settings_set_enable_javascript(settings, TRUE);
+    
     gtk_container_add(GTK_CONTAINER(window), webview);
     
     if (!task->options->html.empty()) {
