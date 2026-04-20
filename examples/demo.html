@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Live Clock</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
         body {
             margin: 0;
@@ -44,6 +44,41 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
+
+        #location {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        #location.visible {
+            opacity: 1;
+        }
+
+        #location svg {
+            flex-shrink: 0;
+            opacity: 0.85;
+        }
+
+        #location-text {
+            white-space: nowrap;
+        }
+
+        .coords {
+            font-size: 10px;
+            opacity: 0.55;
+            margin-top: 2px;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+        }
     </style>
 </head>
 
@@ -51,6 +86,13 @@
     <div class="container">
         <div id="time">00:00</div>
         <div id="date">LOADING...</div>
+        <div id="location">
+            <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 0C3.24 0 1 2.24 1 5c0 3.75 5 9 5 9s5-5.25 5-9c0-2.76-2.24-5-5-5zm0 6.5A1.5 1.5 0 1 1 6 3.5a1.5 1.5 0 0 1 0 3z" fill="currentColor"/>
+            </svg>
+            <span id="location-text">Konum alınıyor...</span>
+        </div>
+        <div class="coords" id="coords"></div>
     </div>
 
     <script>
@@ -58,15 +100,58 @@
             const now = new Date();
             const h = String(now.getHours()).padStart(2, '0');
             const m = String(now.getMinutes()).padStart(2, '0');
-
             document.getElementById('time').textContent = `${h}:${m}`;
-
             const options = { weekday: 'long', month: 'long', day: 'numeric' };
-            document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
+            document.getElementById('date').textContent = now.toLocaleDateString('tr-TR', options).toUpperCase();
         }
 
         setInterval(updateTime, 1000);
         updateTime();
+
+        // Geolocation + Reverse Geocoding (Nominatim)
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    const acc = pos.coords.accuracy;
+
+                    // Show raw coords immediately
+                    document.getElementById('coords').textContent =
+                        `${lat.toFixed(5)}, ${lon.toFixed(5)}  ±${Math.round(acc)}m`;
+                    document.getElementById('location-text').textContent = 'Şehir aranıyor...';
+                    document.getElementById('location').classList.add('visible');
+
+                    try {
+                        const res = await fetch(
+                            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=tr`,
+                            { headers: { 'User-Agent': 'widget-core-linux-demo/1.0' } }
+                        );
+                        const data = await res.json();
+                        const city =
+                            data.address.city ||
+                            data.address.town ||
+                            data.address.village ||
+                            data.address.county ||
+                            '';
+                        const country = data.address.country || '';
+                        document.getElementById('location-text').textContent =
+                            city && country ? `${city}, ${country}` : data.display_name.split(',')[0];
+                    } catch (e) {
+                        document.getElementById('location-text').textContent = `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
+                    }
+                },
+                (err) => {
+                    document.getElementById('location-text').textContent = 'Konum erişimi reddedildi';
+                    document.getElementById('location').classList.add('visible');
+                    console.warn('Geolocation error:', err.message);
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        } else {
+            document.getElementById('location-text').textContent = 'Geolocation desteklenmiyor';
+            document.getElementById('location').classList.add('visible');
+        }
     </script>
 </body>
 
