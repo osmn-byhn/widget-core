@@ -1,6 +1,6 @@
 {
   "name": "@osmn-byhn/widget-core-linux",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "High-performance desktop widget manager library for Linux.",
   "author": "Osman Beyhan",
   "license": "MIT",
