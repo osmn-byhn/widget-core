@@ -1,6 +1,6 @@
 {
   "name": "@osmn-byhn/widget-core-linux",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "High-performance desktop widget manager library for Linux.",
   "author": "Osman Beyhan",
   "license": "MIT",
@@ -16,13 +16,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "setup": "./scripts/setup-linux.sh",
-    "preinstall": "./scripts/setup-linux.sh",
+    "setup": "bash scripts/setup-linux.sh",
+    "preinstall": "bash scripts/setup-linux.sh",
     "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
     "install": "node-gyp rebuild",
-    "demo": "LIBGL_ALWAYS_SOFTWARE=1 WEBKIT_USE_GL=software WEBKIT_DISABLE_ACCELERATED_COMPOSITING=1 WEBKIT_DISABLE_COMPOSITING_MODE=1 GTK_CSD=0 GDK_BACKEND=x11 node examples/demo-widget.js"
+    "demo": "bash scripts/run-demo.sh"
   },
   "keywords": [
     "widget",

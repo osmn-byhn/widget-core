@@ -4,6 +4,10 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 
 // Try to use gtk-layer-shell for Wayland support
 #ifdef HAVE_GTK_LAYER_SHELL
@@ -33,10 +37,53 @@ struct PosTask {
 
 static GMainContext* gtk_context = nullptr;
 
+// ─── Display Environment Detection ─────────────────────────────────────────
+// Detects which desktop environment / compositor is running and configures
+// GDK_BACKEND before GTK initializes. Must be called from the MAIN thread
+// before the GTK background thread is spawned.
+static void setup_display_environment() {
+    // Respect existing override from user
+    const char* backend = getenv("GDK_BACKEND");
+    if (backend && backend[0] != '\0') return;
+
+    // Not a Wayland session → pure X11, nothing to do
+    const char* wayland_display = getenv("WAYLAND_DISPLAY");
+    if (!wayland_display || wayland_display[0] == '\0') return;
+
+    // Determine compositor / desktop environment
+    const char* xdg = getenv("XDG_CURRENT_DESKTOP");
+    const char* sess = getenv("DESKTOP_SESSION");
+    std::string de(xdg ? xdg : (sess ? sess : ""));
+    std::transform(de.begin(), de.end(), de.begin(), ::tolower);
+
+    // wlr-based compositors support gtk-layer-shell natively
+    static const char* wlr_compositors[] = {
+        "sway", "hyprland", "wayfire", "river", "labwc", "dwl", "niri",
+        "cage", "hikari", nullptr
+    };
+
+    for (int i = 0; wlr_compositors[i]; i++) {
+        if (de.find(wlr_compositors[i]) != std::string::npos) {
+            // wlr compositor — native Wayland + gtk-layer-shell works
+            fprintf(stderr,
+                "[widget-core] wlr compositor detected (%s) — using native Wayland\n",
+                de.c_str());
+            return;
+        }
+    }
+
+    // GNOME, KDE Plasma, Unity, Budgie, XFCE, MATE, Cinnamon on Wayland
+    // do NOT implement wlr-layer-shell → force XWayland for compatibility
+    setenv("GDK_BACKEND", "x11", 1);
+    fprintf(stderr,
+        "[widget-core] Wayland compositor '%s' does not support wlr-layer-shell.\n"
+        "[widget-core] Falling back to XWayland for compatibility.\n",
+        de.empty() ? "unknown" : de.c_str());
+}
+
 void run_gtk_loop() {
-    // Note: Environment variables like GDK_BACKEND must be set in the process 
-    // before the GTK thread starts. setenv() is NOT thread-safe for background threads.
     if (!gtk_init_check(NULL, NULL)) {
+        fprintf(stderr, "[widget-core] gtk_init_check failed — no display available\n");
         return;
     }
     gtk_context = g_main_context_default();
@@ -246,6 +293,8 @@ gboolean create_widget_idle(gpointer data) {
 void* WidgetManager::CreateWidget(const std::string& url, const WidgetOptions& options) {
     static std::once_flag init_flag;
     std::call_once(init_flag, []() {
+        // Configure GDK_BACKEND BEFORE spawning GTK thread
+        setup_display_environment();
         std::thread(run_gtk_loop).detach();
         while (!gtk_context) std::this_thread::yield();
     });
